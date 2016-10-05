@@ -1,9 +1,15 @@
-#ifndef _PREPROC_H_
-#define _PREPROC_H_
-
-#ifndef lenof
-#define lenof(BUF) (sizeof(BUF) / sizeof(*(BUF)))
-#endif
+#ifndef _SECURE_PROC_PREPROC_H_
+#define _SECURE_PROC_PREPROC_H_
+/*
+ *  Secure Proc - Preprocessor and Compiler Directives
+ *
+ *  Description:
+ *      A set of compiler attributes and preprocessor macro wrappers
+ *      aid in the programming, debuging, and optimization processes.
+ *
+ *  Author(s):
+ *      Alex Dale (@superoxigen)
+ */
 
 #ifdef __GNUC__
 /* The library is being built using the GNU C Compiler */

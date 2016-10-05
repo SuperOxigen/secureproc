@@ -1,13 +1,19 @@
 
 # Source Code Directories
-INC=include		# Public Headers
-SRC=src 		# Library Source
-TOOL=tools 		# Tool Source
-TEST=tests 		# Test Source
+# Public Headers
+INC=include
+# Library Source
+SRC=src
+# Tool Source
+TOOL=tools
+# Test Source
+TEST=tests
 
 # Build Directories
-BIN=bin			# Tools and Test Build
-LIB=lib 		# Library Binaries
+# Tools and Test Build
+BIN=bin
+# Library Binaries
+LIB=lib
 
 # Compiler Related
 
@@ -29,11 +35,27 @@ EXWARNFLAGS= -Wextra $(ALLPROGWARN) $(GNUCFLAGS) $(BUILDWARN)
 DEBUGFLAGS= $(EXWARNFLAGS) -D_DEBUG -D_VERBOSE
 RELEASEFLAGS= -Werror
 
-.PHONY: clean secureproc tools test all
+.PHONY: clean secureproc tools test all safestring
 
 # Library Builds
+
+COMMON=$(INC)/secureproc/common.h $(INC)/secureproc/_preproc_.h
+
+$(SRC)/safestring.c: $(INC)/secureproc/safestring.h $(COMMON)
+	touch $@
+
+$(LIB)/safestring.o: $(SRC)/safestring.c $(COMMON)
+	$(CC) $(CFLAGS) $(BFLAGS) -o $@ -c $<
+
+safestring: $(LIB)/safestring.o
+
+
+
+COMPONENTS= safestring
+
 secureproc:
-	echo "Library"
+	$(eval export BFLAGS = $(RELEASEFLAGS))
+	$(MAKE) $(COMPONENTS)
 
 # Tool Builds
 tools:
