@@ -14,8 +14,7 @@
  *      Alex Dale (@superoxigen)
  */
 
-#if (defined(__FreeBSD__) && (__FreeBSD__ >= 3)) ||\
-    (defined(__OpenBSD__))
+#if (defined(__FreeBSD__) && (__FreeBSD__ >= 3)) || (defined(__OpenBSD__))
 #define _STRL_INCLUDED_
 /*
  *  The following functions are provided by the standard C library on:
@@ -23,10 +22,10 @@
  *      1)  FreeBSD 3.3 and newer
  */
 extern size_t
-    strlcpy(char * restrict dst, const char * restrict src, size_t size);
+    strlcpy(char * dst, const char * src, size_t size);
 
 extern size_t
-    strlcat(char * restrict dst, const char * restrict src, size_t size);
+    strlcat(char * dst, const char * src, size_t size);
 
 #else /* Non-BSD or older BSD distribution */
 
@@ -59,7 +58,7 @@ extern size_t
  *          - The size of the source string, excluding the NULL
  *            terminator.
  */
-size_t strlcpy(char * restrict dst, const char * restrict src, size_t size);
+size_t strlcpy(char * dst, const char * src, size_t size);
 
 /*
  *  strlcpy
@@ -92,7 +91,7 @@ size_t strlcpy(char * restrict dst, const char * restrict src, size_t size);
  *            string already stored in the destination, excluding the
  *            NULL terminator.
  */
-size_t strlcat(char * restrict dst, const char * restrict src, size_t size);
+size_t strlcat(char * dst, const char * src, size_t size);
 
 #endif /* Non-BSD OS */
 

@@ -15,6 +15,13 @@
 /* The library is being built using the GNU C Compiler */
 
 /*
+ *  Variable Attributes
+ */
+
+#define restrict __restrict__
+
+
+/*
  *  Function Attributes
  */
 

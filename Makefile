@@ -26,13 +26,13 @@ GNUCWARN= -Wsuggest-attribute=[pure|const|noreturn|format]
 BUILDWARN= -Wmissing-include-dirs
 # Programatic Warnings
 MATHWARN= -Wfloat-equal
-LOGICWARN= -Wduplicated-cond
+LOGICWARN=
 STRWARN= -Wformat=2
 # Groupings
 ALLPROGWARN= $(MATHWARN) $(LOGICWARN) $(STRWARN)
 EXWARNFLAGS= -Wextra $(ALLPROGWARN) $(GNUCFLAGS) $(BUILDWARN)
 # Build Mode Flags
-DEBUGFLAGS= $(EXWARNFLAGS) -D_DEBUG -D_VERBOSE
+DEBUGFLAGS= $(EXWARNFLAGS) -D_DEBUG_ -D_VERBOSE_
 RELEASEFLAGS= -Werror
 
 .PHONY: clean secureproc tools test all safestring
@@ -55,6 +55,10 @@ COMPONENTS= safestring
 
 secureproc:
 	$(eval export BFLAGS = $(RELEASEFLAGS))
+	$(MAKE) $(COMPONENTS)
+
+debug:
+	$(eval export BFLAGS = $(DEBUGFLAGS))
 	$(MAKE) $(COMPONENTS)
 
 # Tool Builds
