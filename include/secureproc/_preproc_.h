@@ -15,6 +15,10 @@
 /* The library is being built using the GNU C Compiler */
 
 /*
+ *  Macro Compatibility
+ */
+
+/*
  *  Variable Attributes
  */
 
@@ -71,6 +75,14 @@
 
 #else
 /* The library is being built using a non GNU C Compiler */
+
+/*
+ *  Macro Compatibility
+ */
+
+#ifndef __FUNCTION__
+#define __FUNCTION__ __func__
+#endif
 
 #ifndef __pure__
 #define __pure__
