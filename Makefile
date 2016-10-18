@@ -18,7 +18,7 @@ LIB=lib
 # Compiler Related
 
 CC=gcc
-CFLAGS= -std=c11 -Wall -I$(INC)
+CFLAGS= -std=c11 -Wall -I$(INC) -D_XOPEN_SOURCE=700
 
 # Warning Flags
 # GNU C and Compiler Warnings
@@ -49,9 +49,15 @@ $(LIB)/safestring.o: $(SRC)/safestring.c $(COMMON)
 
 safestring: $(LIB)/safestring.o
 
+$(SRC)/logger.c: $(INC)/secureproc/logger.h $(COMMON)
+	touch $@
 
+$(LIB)/logger.o: $(SRC)/logger.c $(COMMON)
+	$(CC) $(CFLAGS) $(BFLAGS) -o $@ -c $<
 
-COMPONENTS= safestring
+logger: $(LIB)/logger.o
+
+COMPONENTS= safestring logger
 
 secureproc:
 	$(eval export BFLAGS = $(RELEASEFLAGS))
@@ -66,8 +72,21 @@ tools:
 	echo "Tools"
 
 # Test Builds
+
+
+$(BIN)/logger.test: $(TEST)/logger.test.c $(LIB)/logger.o
+	$(CC) $(CFLAGS) $(BFLAGS) -o $@ $(TEST)/logger.test.c $(LIB)/logger.o
+
+$(BIN)/safestring.test: $(TEST)/safestring.test.c $(LIB)/safestring.o
+	$(CC) $(CFLAGS) $(BFLAGS) -o $@ $(TEST)/safestring.test.c $(LIB)/logger.o $(LIB)/safestring.o
+
+TESTSUITES= $(BIN)/logger.test $(BIN)/safestring.test
+
 test:
-	echo "Tests"
+	$(eval export BFLAGS = $(DEBUGFLAGS))
+	$(MAKE) $(TESTSUITES)
+	$(BIN)/logger.test
+	$(BIN)/safestring.test
 
 all: secureproc tools
 
