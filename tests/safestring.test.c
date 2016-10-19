@@ -1,8 +1,9 @@
 
 #include <string.h>
+#include <stdio.h>
 
 #include "secureproc/safestring.h"
-#include "secureproc/logger.h"
+
 
 typedef enum _TestStatus
 {
@@ -18,31 +19,31 @@ TestStatus strlcpy_test1(void)
 
     if (strlcpy(buf, "Hello World", sizeof(buf)) >= sizeof(buf))
     {
-        SECINFO("Test 1 (a) [PASS]: copy feedback\n");
+        printf("Test 1 (a) [PASS]: copy feedback\n");
     }
     else
     {
-        SECWARN("Test 1 (a) [FAIL]: copy feedback\n");
+        printf("Test 1 (a) [FAIL]: copy feedback\n");
         return TEST_FAIL;
     }
 
     if (!buf[sizeof(buf) - 1])
     {
-        SECINFO("Test 1 (b) [PASS]: null terminated\n");
+        printf("Test 1 (b) [PASS]: null terminated\n");
     }
     else
     {
-        SECWARN("Test 1 (b) [FAIL]: null terminated\n");
+        printf("Test 1 (b) [FAIL]: null terminated\n");
         return TEST_FAIL;
     }
 
     if (!strcmp(buf, "Hello Wor"))
     {
-        SECINFO("Teat 1 (c) [PASS]: truncated string\n");
+        printf("Teat 1 (c) [PASS]: truncated string\n");
     }
     else
     {
-        SECWARN("Teat 1 (c) [FAIL]: truncated string\n");
+        printf("Teat 1 (c) [FAIL]: truncated string\n");
         return TEST_FAIL;
     }
 
@@ -55,30 +56,30 @@ TestStatus strlcpy_test2(void)
 
     if (strlcpy(buf, "Hello World", sizeof(buf)) == 11)
     {
-        SECINFO("Test 2 (a) [PASS]: string length correct.\n");
+        printf("Test 2 (a) [PASS]: string length correct.\n");
     }
     else
     {
-        SECWARN("Test 2 (a) [FAIL]: string length correct.\n");
+        printf("Test 2 (a) [FAIL]: string length correct.\n");
     }
 
     if (!buf[11])
     {
-        SECINFO("Test 2 (b) [PASS]: null terminated\n");
+        printf("Test 2 (b) [PASS]: null terminated\n");
     }
     else
     {
-        SECWARN("Test 2 (b) [FAIL]: null terminated\n");
+        printf("Test 2 (b) [FAIL]: null terminated\n");
         return TEST_FAIL;
     }
 
     if (!strcmp(buf, "Hello World"))
     {
-        SECINFO("Teat 2 (c) [PASS]: truncated string\n");
+        printf("Teat 2 (c) [PASS]: truncated string\n");
     }
     else
     {
-        SECWARN("Teat 2 (c) [FAIL]: truncated string\n");
+        printf("Teat 2 (c) [FAIL]: truncated string\n");
         return TEST_FAIL;
     }
 
@@ -93,29 +94,29 @@ TestStatus strlcpy_test3(void)
 
     if (strlcpy(buf, "Hello World", 0) == 11)
     {
-        SECINFO("Test 3 (a) [PASS]: string length correct.\n");
+        printf("Test 3 (a) [PASS]: string length correct.\n");
     }
     else
     {
-        SECWARN("Test 3 (a) [FAIL]: string length correct.\n");
+        printf("Test 3 (a) [FAIL]: string length correct.\n");
         return TEST_FAIL;
     }
 
     if (buf[0])
     {
-        SECWARN("Test 3 (b) [FAIL]: wrote to empty buffer.\n");
+        printf("Test 3 (b) [FAIL]: wrote to empty buffer.\n");
         return TEST_FAIL;
     }
     else
     {
-        SECINFO("Test 3 (b) [PASS]: did not write to empty buffer.\n");
+        printf("Test 3 (b) [PASS]: did not write to empty buffer.\n");
     }
 
 
     return TEST_PASS;
 }
 
-int strlcpy_test(void)
+void strlcpy_test(void)
 {
     int         failures = 0,
                 passes = 0;
@@ -139,7 +140,8 @@ int strlcpy_test(void)
     else
         passes++;
 
-    return failures;
+    printf("strlcpy\n\tPasses: %3d\n\tFails:  %3d\n\tTotal:  %3d\n",
+            passes, failures, passes+failures);
 }
 
 int main(void)

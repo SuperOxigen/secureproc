@@ -24,6 +24,17 @@
 
 #define restrict __restrict__
 
+/*
+ *  __bnd_variable_size__
+ *
+ *  Indicates to Pointer Bounds Checker that the compile-time array
+ *  boundry is not to be enforced by warnings or errors as the actual
+ *  size is variable.
+ */
+#ifndef __bnd_variable_size__
+#define __bnd_variable_size__ __attribute__((bnd_variable_size))
+#endif
+
 
 /*
  *  Function Attributes
@@ -68,12 +79,28 @@
  *
  *  Indicates that the function takes arguments in a simular style as a
  *  *printf() family function.
+ *
+ *  Parameters:
+ *      archetype (function)
+ *          - The type/style of format string to be expected.  Can be
+ *            one of the following functions {printf, scanf, strftime,
+ *            gnu_printf, gnu_scanf, gnu_strftime or strfmon}
+ *
+ *      formatindex (integer)
+ *          - The index of the format string in the attributed
+ *            function's parameter list, index starting at 1.
+ *
+ *      varindex (integer)
+ *          - The index of the first format string argument in the
+ *            attributed function's parameter list, index starting at
+ *            1.
  */
 #ifndef __format__
-#define __format__ __attribute__((format))
+#define __format__(archetype, formatindex, varindex) \
+        __attribute__((format (archetype, formatindex, varindex)))
 #endif
 
-#else
+#else   /* if not GNU-C */
 /* The library is being built using a non GNU C Compiler */
 
 /*
@@ -97,9 +124,12 @@
 #endif
 
 #ifndef __format__
-#define __format__
+#define __format__(archetype, format_index, var_index)
 #endif
 
+#ifndef __bnd_variable_size__
+#define __bnd_variable_size__
+#endif
 
 #endif
 

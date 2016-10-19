@@ -4,7 +4,7 @@
 #include "secureproc/_preproc_.h"
 
 /*
- *  Secure Proc - Logger
+ *  Secure Proc - Logger (internal)
  *
  *  Description:
  *      A small logging library intended for the internal use of the
@@ -118,8 +118,9 @@
  *          - The total number of characters that were printed to the
  *            log output.
  */
-int seclogf(int severity, const char * filename, int lineno,
-            const char * funcname, const char * format, ...);
+int __format__(printf, 5, 6) seclogf(int severity, const char * filename,
+                                     int lineno, const char * funcname,
+                                     const char * format, ...);
 
 /*
  *  Function: seclog_init
