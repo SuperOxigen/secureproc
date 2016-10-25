@@ -13,12 +13,14 @@ TEST=tests
 # Tools and Test Build
 BIN=bin
 # Library Binaries
+ifndef LIB
 LIB=lib
+endif
 
 # Compiler Related
 
 CC=gcc
-CFLAGS= -std=c11 -Wall -I$(INC) -D_XOPEN_SOURCE=700
+CFLAGS= -std=c11 -Wall -I$(INC) -D_XOPEN_SOURCE=700 -D_BSD_SOURCE
 
 # Warning Flags
 # GNU C and Compiler Warnings
@@ -35,7 +37,7 @@ EXWARNFLAGS= -Wextra $(ALLPROGWARN) $(GNUCFLAGS) $(BUILDWARN)
 DEBUGFLAGS= $(EXWARNFLAGS) -D_DEBUG_ -D_VERBOSE_
 RELEASEFLAGS= -Werror
 
-.PHONY: clean secureproc tools test all safestring
+.PHONY: clean secureproc tools test all safestring sanitize logger debug
 
 # Library Builds
 
@@ -57,7 +59,15 @@ $(LIB)/logger.o: $(SRC)/logger.c $(COMMON)
 
 logger: $(LIB)/logger.o
 
-COMPONENTS= safestring logger
+$(SRC)/sanitize.c: $(INC)/secureproc/sanitize.h $(INC)/secureproc/logger.h
+	touch $@
+
+$(LIB)/sanitize.o: $(SRC)/sanitize.c $(COMMON)
+	$(CC) $(CFLAGS) $(BFLAGS) -o $@ -c $<
+
+sanitize: $(LIB)/sanitize.o
+
+COMPONENTS= safestring logger sanitize
 
 secureproc:
 	$(eval export BFLAGS = $(RELEASEFLAGS))
@@ -65,6 +75,8 @@ secureproc:
 
 debug:
 	$(eval export BFLAGS = $(DEBUGFLAGS))
+	$(eval export LIB = $(LIB)/debug)
+	mkdir -p $(LIB)
 	$(MAKE) $(COMPONENTS)
 
 # Tool Builds
@@ -72,8 +84,6 @@ tools:
 	echo "Tools"
 
 # Test Builds
-
-
 $(BIN)/logger.test: $(TEST)/logger.test.c $(LIB)/logger.o
 	$(CC) $(CFLAGS) $(BFLAGS) -o $@ $(TEST)/logger.test.c $(LIB)/logger.o
 
@@ -84,6 +94,7 @@ TESTSUITES= $(BIN)/logger.test $(BIN)/safestring.test
 
 test:
 	$(eval export BFLAGS = $(DEBUGFLAGS))
+	$(eval export LIB = $(LIB)/debug)
 	$(MAKE) $(TESTSUITES)
 	$(BIN)/logger.test
 	$(BIN)/safestring.test
