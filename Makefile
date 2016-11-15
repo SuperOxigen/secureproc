@@ -37,17 +37,25 @@ EXWARNFLAGS= -Wextra $(ALLPROGWARN) $(GNUCFLAGS) $(BUILDWARN)
 DEBUGFLAGS= $(EXWARNFLAGS) -D_DEBUG_ -D_VERBOSE_
 RELEASEFLAGS= -Werror
 
-.PHONY: clean secureproc tools test all safestring sanitize logger debug
+.PHONY: clean secureproc tools test all safestring sanitize logger debug utils
 
 # Library Builds
 
 COMMON=$(INC)/secureproc/common.h $(INC)/secureproc/_preproc_.h
 
+$(SRC)/utils.c: $(INC)/secureproc/utils.h
+	touch $@
+
+$(LIB)/utils.o: $(SRC)/utils.c $(COMMON)
+	$(CC) $(CFLAGS) $(BFLAGS) -o $@ -c $(SRC)/utils.c
+
+utils: $(LIB)/utils.o
+
 $(SRC)/safestring.c: $(INC)/secureproc/safestring.h $(COMMON)
 	touch $@
 
 $(LIB)/safestring.o: $(SRC)/safestring.c $(COMMON)
-	$(CC) $(CFLAGS) $(BFLAGS) -o $@ -c $<
+	$(CC) $(CFLAGS) $(BFLAGS) -o $@ -c $(SRC)/safestring.c
 
 safestring: $(LIB)/safestring.o
 
@@ -55,7 +63,7 @@ $(SRC)/logger.c: $(INC)/secureproc/logger.h $(COMMON)
 	touch $@
 
 $(LIB)/logger.o: $(SRC)/logger.c $(COMMON)
-	$(CC) $(CFLAGS) $(BFLAGS) -o $@ -c $<
+	$(CC) $(CFLAGS) $(BFLAGS) -o $@ -c $(SRC)/logger.c
 
 logger: $(LIB)/logger.o
 
